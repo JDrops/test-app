@@ -1,18 +1,17 @@
 $(document).ready(function() {
-  // Function to display items from CSV
-  function displayItems() {
+  // Function to display tasks from CSV
+  function displayTasks() {
     $.ajax({
-      url: 'data.csv',
-      method: 'GET',
+      url: 'tasks.csv',
       dataType: 'text',
       success: function(data) {
         var rows = data.split(/\r?\n|\r/);
-        var itemList = $('#itemList');
-        itemList.empty(); // Clear the list before updating
+        var taskList = $('#taskList');
+        taskList.empty(); // Clear the list before updating
 
         rows.forEach(function(row) {
           var li = $('<li>').text(row);
-          itemList.append(li);
+          taskList.append(li);
         });
       },
       error: function(error) {
@@ -21,22 +20,22 @@ $(document).ready(function() {
     });
   }
 
-  // Initial display of items when the page loads
-  displayItems();
+  // Initial display of tasks when the page loads
+  displayTasks();
 
-  // Event handling for adding items
-  $('#addBtn').click(function() {
-    var newItem = $('#newItem').val();
+  // Event handling for adding tasks
+  $('#addTaskBtn').click(function() {
+    var newTask = $('#newTask').val();
 
-    if (newItem !== '') {
+    if (newTask !== '') {
       $.ajax({
-        url: 'data.csv',
-        type: 'GET',
+        url: 'tasks.csv',
+        type: 'POST', // Note: GitHub Pages doesn't support writing to files
         contentType: 'text/csv',
-        data: newItem + '\n',
+        data: newTask + '\n',
         success: function() {
-          displayItems(); // Update the displayed list
-          $('#newItem').val(''); // Clear the input field
+          displayTasks(); // Update the displayed list
+          $('#newTask').val(''); // Clear the input field
         },
         error: function(error) {
           console.error('Error updating data:', error);
