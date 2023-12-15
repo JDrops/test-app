@@ -1,17 +1,46 @@
-function addItem() {
-  // Get the value from the input field
-  var newItem = document.getElementById('newItem').value;
+$(document).ready(function() {
+  // Function to display items from CSV
+  function displayItems() {
+    $.ajax({
+      url: 'data.csv',
+      dataType: 'text',
+      success: function(data) {
+        var rows = data.split(/\r?\n|\r/);
+        var itemList = $('#itemList');
+        itemList.empty(); // Clear the list before updating
 
-  // Check if the input is not empty
-  if (newItem !== '') {
-    // Create a new list item element
-    var li = document.createElement('li');
-    li.textContent = newItem;
-
-    // Append the new item to the list
-    document.getElementById('itemList').appendChild(li);
-
-    // Clear the input field
-    document.getElementById('newItem').value = '';
+        rows.forEach(function(row) {
+          var li = $('<li>').text(row);
+          itemList.append(li);
+        });
+      },
+      error: function(error) {
+        console.error('Error fetching data:', error);
+      }
+    });
   }
-}
+
+  // Initial display of items when the page loads
+  displayItems();
+
+  // Event handling for adding items
+  $('#addBtn').click(function() {
+    var newItem = $('#newItem').val();
+
+    if (newItem !== '') {
+      $.ajax({
+        url: 'data.csv',
+        type: 'POST',
+        contentType: 'text/csv',
+        data: newItem + '\n',
+        success: function() {
+          displayItems(); // Update the displayed list
+          $('#newItem').val(''); // Clear the input field
+        },
+        error: function(error) {
+          console.error('Error updating data:', error);
+        }
+      });
+    }
+  });
+});
