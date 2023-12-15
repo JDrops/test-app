@@ -31,7 +31,7 @@ $(document).ready(function() {
     if (newItem !== '') {
       $.ajax({
         url: 'data.csv',
-        type: 'POST',
+        type: 'GET',
         contentType: 'text/csv',
         data: newItem + '\n',
         success: function() {
