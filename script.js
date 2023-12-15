@@ -3,6 +3,7 @@ $(document).ready(function() {
   function displayItems() {
     $.ajax({
       url: 'data.csv',
+      method: 'GET',
       dataType: 'text',
       success: function(data) {
         var rows = data.split(/\r?\n|\r/);
