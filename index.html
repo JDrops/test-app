@@ -2,12 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Barcode Scanner with Marker</title>
+  <title>QR Code Scanner</title>
   <style>
+    /* CSS for the scanner container */
+    #scanner-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
     /* CSS for the marker */
-    .barcode-marker {
+    .qr-marker {
       position: absolute;
-      border: 2px solid red;
+      border: 2px solid limegreen;
       pointer-events: none;
     }
   </style>
@@ -17,8 +24,8 @@
   <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
 </head>
 <body>
-  <h1>Barcode Scanner with Marker</h1>
-  <div id="barcode-scanner" style="position: relative;"></div>
+  <h1>QR Code Scanner</h1>
+  <div id="scanner-container"></div>
 
   <script>
     $(document).ready(function() {
@@ -26,10 +33,10 @@
         inputStream: {
           name: "Live",
           type: "LiveStream",
-          target: document.querySelector("#barcode-scanner")
+          target: document.querySelector("#scanner-container")
         },
         decoder: {
-          readers: ["ean_reader"] // Change this to match the type of barcode you want to scan
+          readers: ["qrcode_reader"] // Use the QR code reader
         }
       }, function(err) {
         if (err) {
@@ -38,19 +45,19 @@
         }
         Quagga.start();
         Quagga.onDetected(function(data) {
-          console.log("Barcode detected and read: ", data.codeResult.code);
+          console.log("QR Code detected and read: ", data.codeResult.code);
           // Create and position the marker
           var marker = document.createElement("div");
-          marker.className = "barcode-marker";
+          marker.className = "qr-marker";
           var canvas = Quagga.canvas.dom.image;
           marker.style.left = data.box[0].x + "px";
           marker.style.top = data.box[0].y + "px";
           marker.style.width = data.box[2].x - data.box[0].x + "px";
           marker.style.height = data.box[2].y - data.box[0].y + "px";
-          document.querySelector("#barcode-scanner").appendChild(marker);
+          document.querySelector("#scanner-container").appendChild(marker);
 
-          // You can perform actions with the scanned barcode here
-          alert("Scanned Barcode: " + data.codeResult.code);
+          // You can perform actions with the scanned QR code here
+          alert("Scanned QR Code: " + data.codeResult.code);
           Quagga.stop();
         });
       });
