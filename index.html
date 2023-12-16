@@ -2,19 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>To-Do List</title>
+  <title>Barcode Scanner</title>
+  <!-- Include jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include QuaggaJS -->
+  <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
 </head>
 <body>
-  <h1>To-Do List</h1>
+  <h1>Barcode Scanner</h1>
+  <div id="barcode-scanner"></div>
 
-  <!-- Input field and button for adding tasks -->
-  <input type="text" id="newTask">
-  <button id="addTaskBtn">Add Task</button>
-
-  <!-- Display area for tasks -->
-  <ul id="taskList"></ul>
-
-  <script src="script.js"></script>
+  <script>
+    $(document).ready(function() {
+      Quagga.init({
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector("#barcode-scanner")
+        },
+        decoder: {
+          readers: ["ean_reader"] // Change this to match the type of barcode you want to scan
+        }
+      }, function(err) {
+        if (err) {
+          console.error("Failed to initialize Quagga: ", err);
+          return;
+        }
+        Quagga.start();
+        Quagga.onDetected(function(data) {
+          console.log("Barcode detected and read: ", data.codeResult.code);
+          // You can perform actions with the scanned barcode here
+          alert("Scanned Barcode: " + data.codeResult.code);
+          Quagga.stop();
+        });
+      });
+    });
+  </script>
 </body>
 </html>
